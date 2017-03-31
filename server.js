@@ -29,12 +29,13 @@ _.forEach(config.foldersRutas, function(valor) {
 });
 
 // Crea conexion con la base de datos
-connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+/*connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
   process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
   process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
   process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
   process.env.OPENSHIFT_APP_NAME;
-mongoose.connect(connection_string);
+mongoose.connect(connection_string);*/
+mongoose.connect('mongodb://' + config.dbUser + ':' + config.dbPass + '@' + config.dbURI);
 
 // Si la conexion falla
 var db = mongoose.connection;
@@ -51,4 +52,4 @@ app.get('*', function(req, res) {
 // Empieza el servidor a escuchar peticiones en el puerto seleccionado
 app.listen(port);
 
-console.log(chalk.green('Express server ejecutandose en ' + process.env.NODE_IP + " : " + port));
+console.log(chalk.green('Express server ejecutandose en ' + (process.env.NODE_IP || "localhost") + " : " + port));
