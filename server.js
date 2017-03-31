@@ -46,7 +46,7 @@ app.use(morgan('dev'));
 
 // Ruta predeterminada
 app.get('*', function(req, res) {
-	res.send('Hola :)');
+	res.send('<h1> API de Approf </h1>');
 });
 
 // Empieza el servidor a escuchar peticiones en el puerto seleccionado
