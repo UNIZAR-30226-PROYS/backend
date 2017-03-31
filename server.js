@@ -8,7 +8,7 @@ var _ = require('lodash');
 var chalk = require('chalk');
 var bodyParser = require('body-parser');
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || config.puerto || 8080;
+var port = process.env.NODE_PORT || config.puerto || 8080;
 
 // Inicializa el servidor HTTP
 var app = express();
@@ -51,4 +51,4 @@ app.get('*', function(req, res) {
 // Empieza el servidor a escuchar peticiones en el puerto seleccionado
 app.listen(port);
 
-console.log(chalk.green('Express server ejecutandose en ' + process.env.OPENSHIFT_NODEJS_IP + " : " + port));
+console.log(chalk.green('Express server ejecutandose en ' + process.env.NODE_IP + " : " + port));

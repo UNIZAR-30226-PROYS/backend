@@ -1,14 +1,14 @@
 {
-  "name": "Approf_Backend",
-  "version": "0.0.1",
-  "description": "",
-  "main": "server.js",
+  "name": "openshift-cartridge-nodejs-template",
+  "version": "1.0.1",
+  "description": "Custom Node.js cartridge for OpenShift - sample application",
+  "private": true,
+  "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node --use_strict start.js"
   },
-  "author": "Wikes",
-  "license": "",
+  "author": "Ionut-Cristian Florescu <ionut.florescu@gmail.com>",
+  "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
