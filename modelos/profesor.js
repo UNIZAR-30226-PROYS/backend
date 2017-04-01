@@ -16,7 +16,7 @@ var profesorSchema = new Schema({
 	precioHora: {type: Number,required:true},
 	ciudad: {type: String,required:true},
 	horarios: [{type: String,required: true}],
-	asignaturas: [{type: Asignatura,required: true}]
+	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura',required: true}]
 });
  
 module.exports=mongoose.model('Profesor',profesorSchema);
