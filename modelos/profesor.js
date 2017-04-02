@@ -10,7 +10,9 @@ var profesorSchema = new Schema({
 	telefono: {type: String,required:true},
 	userName: {type: String, required: true, index: true, unique: true},
 	password: {type: String, required: true},
-	email: {type: String,required: true},
+	email: {type: String, required: true, match: [/[^ ]+@[^ ]+\.(com|es)/, "No es un email válido"]},
+
+	sesion: {type: String, required: true},
 
 	diasPromocionRestantes: {type: Number,default: 0},
 	precioHora: {type: Number,required:true},
