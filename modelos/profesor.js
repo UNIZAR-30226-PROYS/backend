@@ -15,10 +15,10 @@ var profesorSchema = new Schema({
 	sesion: {type: String, required: true},
 
 	diasPromocionRestantes: {type: Number,default: 0},
-	precioHora: {type: Number,required:true},
+	precioHora: {type: Number},
 	ciudad: {type: String,required:true},
-	horarios: [{type: String,required: true}],
-	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura',required: true}]
+	horarios: [{type: String}],
+	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura'}]
 });
  
 module.exports=mongoose.model('Profesor',profesorSchema);

@@ -8,6 +8,8 @@ var _ = require('lodash');
 var chalk = require('chalk');
 var bodyParser = require('body-parser');
 
+var auth_middleware = require('./auth');
+
 var port = process.env.NODE_PORT || config.puerto || 8080;
 
 // Inicializa el servidor HTTP
@@ -43,6 +45,9 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 // Logger de las peticiones HTTP recibidas
 app.use(morgan('dev'));
+
+// Middleware que parsea el token y extrae los credenciales de sesión
+app.use(auth_middleware);
 
 // Ruta predeterminada
 app.get('*', function(req, res) {
