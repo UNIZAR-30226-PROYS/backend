@@ -1,12 +1,17 @@
 
-var modeloProf = require('../modelos/profesor');
+var n_modelos = 2;
+var modelos = Array(n_modelos);
+modelos[0] = require('../modelos/profesor');
+modelos[1] = require('../modelos/asignatura');
 
-module.exports = function (app) 
+var _ = require('lodash');
+
+module.exports = function (app)
 {
 	app.get('/api/busqueda', function (req, res) {
 
 		//Parametros de la busqueda: asignatura, nivel, ciudad, precioHora
-		if (_.isEmpty(req.body))
+		if (_.isEmpty(req.query))
 		{
 			res.status(400).json({
 				succes: false,
@@ -15,26 +20,44 @@ module.exports = function (app)
 		}
 		else
 		{
-			var query = {}; 			//Construimos la query en funcion de los parametros rellenados
 
-			query["$and"]=[];
-			if((req.body.ciudad).length > 0){ query["$and"].push({ciudad: req.body.ciudad});}
-			if(((req.body.asignatura).length > 0) && ((req.body.nivel).length > 0))
-			{
-				//Busca el _id de la asignatura/nivel y lo añade a la query
-				//Buscar tambien asignaturas de todos los niveles???
-				Asignatura.findOne({nombre: req.params.asignatura, nivel: req.params.nivel},function(err,data)
+			var query = {}; 			//Construimos la query en funcion de los parametros rellenados
+			var errorQuery = false;
+
+						query["$and"]=[];
+				if(req.query.ciudad){ query["$and"].push({ciudad: req.query.ciudad});}
+				if(req.query.precioHora){ query["$and"].push({precioHora: req.query.precioHora});}
+				if(req.query.asignatura)
 				{
-					query["$and"].push({asignaturas: data._id});
-				});
+					if(req.query.nivel)	//Busca el _id de la asignatura/nivel y lo añade a la query
+					{
+						modelos[1].findOne({nombre: req.query.asignatura, nivel: req.query.nivel}, function (err, data) {
+							console.log(data);
+							if (err || !data) {errorQuery = true;}
+							else {query["$and"].push({asignaturas: data._id});}
+						});
+					}
+					else		//Busca todos lo id de la asignatura a todos los niveles
+				{
+					modelos[1].find({nombre: req.query.asignatura}, {_id: 1}).toArray(function (err, data) {
+						console.log(data);
+						if (err || !data) {errorQuery = true;}
+						else {query["$and"].push({asignaturas: {$in: data}});}		//Seguramente no funcione
+					});
+				}
+
 			}
-			if((req.body.precioHora).length > 0){ query["$and"].push({precioHora: req.body.precioHora});}
+			console.log("errorenquery:");
+			console.log(errorQuery);
+			console.log("query:");
+			console.log(query);
 
 			//2o parametro 'proyecciones' para solo devolver los campos que debe ver el usuario
-			modeloProf.find(query,
+			modelos[0].find(query,
 				{nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1 },
 				function(error,data)
 				{
+					console.log(data);
 					if (error || !data)
 					{
 						console.log("Error en la busqueda");
@@ -48,7 +71,7 @@ module.exports = function (app)
 					{
 						res.json(data);
 					}
-		});
+				});
 		}
 
 	});

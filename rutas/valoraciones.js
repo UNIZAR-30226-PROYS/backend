@@ -1,7 +1,7 @@
 
 require('../modelos/alumno');
 require('../modelos/profesor');
-require('../modelos/valoraciones');
+require('../modelos/valoracion');
 
 
 module.exports = function (app) 
