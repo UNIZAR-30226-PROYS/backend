@@ -9,6 +9,7 @@ var chalk = require('chalk');
 var bodyParser = require('body-parser');
 
 var auth_middleware = require('./auth');
+var updateD = require('./updateDays');
 
 var port = process.env.NODE_PORT || config.puerto || 8080;
 
@@ -53,6 +54,12 @@ app.use(auth_middleware);
 app.get('*', function(req, res) {
 	res.send('<h1> API de Approf </h1>');
 });
+
+//const tomorrow = new Date();
+//tomorrow.setDate(tomorrow.getDate + 1);
+
+//setInterval(updateD.updateDays,1000);
+setInterval(updateD.updateDays(),8.64e+7);
 
 // Empieza el servidor a escuchar peticiones en el puerto seleccionado
 app.listen(port);
