@@ -9,6 +9,8 @@ var config = require('../config');
 
 var chalk = require('chalk');
 var _ = require('lodash');
+var bcrypt = require('bcrypt-nodejs');
+var jwt = require('jsonwebtoken');
 
 module.exports = function (app) 
 {
@@ -23,7 +25,7 @@ module.exports = function (app)
 		}
 		else
 		{
-			modelos[req.body.tipo].findOne({userName: req.body.username}, function(err, data){
+			modelos[req.body.tipo].findOne({userName: req.body.userName}, function(err, data){
 				if (err || !data) {
 					console.log(chalk.red("Error usuario " + req.body.username + " o contraseña " + req.body.password));
 					console.log(data);
@@ -69,8 +71,10 @@ module.exports = function (app)
 	app.post('/api/register', function(req, res)
 	{
 		var datos = null;
+		console.log(req.body);
 		if (req.body.tipo && req.body.tipo == 0)
 		{
+			console.log("1");
 			if (req.body.nombre && req.body.apellidos && req.body.telefono && req.body.userName && req.body.password && req.body.email)
 			{
 				config.saltInit(false);

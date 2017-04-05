@@ -59,7 +59,7 @@ app.get('*', function(req, res) {
 //tomorrow.setDate(tomorrow.getDate + 1);
 
 //setInterval(updateD.updateDays,1000);
-setInterval(updateD.updateDays(),8.64e+7);
+setInterval(updateD.updateDays,8.64e+7);
 
 // Empieza el servidor a escuchar peticiones en el puerto seleccionado
 app.listen(port);

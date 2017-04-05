@@ -31,6 +31,7 @@ module.exports = function (req, res, next) {
 			if (!err && deco.user && deco.tipo) {
 				modelos[deco.tipo].findOne({userName: deco.user.userName}, function(err, data) {
 					if (!err && data && data.sesion == deco.user.sesion) {
+						console.log(deco);
 						req.decoded = deco;
 						next();
 					}

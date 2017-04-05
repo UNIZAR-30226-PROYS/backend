@@ -5,9 +5,12 @@ var modelos = Array(n_modelos);
 modelos[0] = require('../modelos/alumno');
 modelos[1] = require('../modelos/profesor');
 
+var auth = require('../auth');
+var _ = require('lodash');
+
 module.exports = function (app) 
 {
-	app.get('/api/perfil/get', function(req,res) {
+	app.get('/api/perfil/get', auth, function(req,res) {
 		// Solo se devolverá la info si el usuario se encuentra logeado
 		if (req.decoded) 
 		{
@@ -38,7 +41,7 @@ module.exports = function (app)
 	});
 
 	// Se le envia un objeto con las propiedades que se desean recuperar
-	app.post('/api/perfil/get', function(req,res) {
+	app.post('/api/perfil/get', auth, function(req,res) {
 		// Solo se devolverá la info si el usuario se encuentra logeado
 		if (req.decoded) 
 		{
@@ -77,7 +80,7 @@ module.exports = function (app)
 		}
 	});
 
-	app.post('/api/perfil/set', function (req, res) {
+	app.post('/api/perfil/set', auth, function (req, res) {
 		if (req.decoded && !_.isEmpty(req.body))
 		{
 			// Es un alumno
