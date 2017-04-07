@@ -4,13 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-var alumnoSchema = new Schema({ 
-	nombre: {type: String, required: true},
-	apellidos: {type: String, required: true},
-	telefono: {type: String,required:true},
+var alumnoSchema = new Schema({
 	userName: {type: String, required: true, index: true, unique: true},
 	password: {type: String, required: true},
-	email: {type: String, required: true, match: [/[^ ]+@[^ ]+\.(com|es)/, "No es un email válido"]},
 
 	sesion: {type: String, required: true}
 });

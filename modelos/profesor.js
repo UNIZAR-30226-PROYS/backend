@@ -10,15 +10,16 @@ var profesorSchema = new Schema({
 	telefono: {type: String,required:true},
 	userName: {type: String, required: true, index: true, unique: true},
 	password: {type: String, required: true},
-	email: {type: String, required: true, match: [/[^ ]+@[^ ]+\.(com|es)/, "No es un email válido"]},
-
-	sesion: {type: String, required: true},
+	email: {type: String,required: true},
 
 	diasPromocionRestantes: {type: Number,default: 0},
-	precioHora: {type: Number},
+	precioHora: {type: Number,required:true},
 	ciudad: {type: String,required:true},
-	horarios: [{type: String}],
-	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura'}]
+	horarios: [{type: String,required: true}],
+	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura',required: true}],
+	
+	valoracionMedia: {type:Number,required:true},
+	numeroValoraciones: {type:Number,required:true,default:0}
 });
  
 module.exports=mongoose.model('Profesor',profesorSchema);
