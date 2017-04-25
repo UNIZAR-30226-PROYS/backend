@@ -18,7 +18,7 @@ module.exports = function (app)
 		if (req.decoded && !_.isEmpty(req))
 		{
 			
-			Valoracion.insertOne(profesor:req.decoded.profesorID,alumno:req.decoded.alumnoID, puntuacion:req.decoded.puntuacion);
+			Valoracion.insertOne({profesor:req.decoded.profesorID,alumno:req.decoded.alumnoID, puntuacion:req.decoded.puntuacion});
 			Profesor.findOne({_id:req.decoded.profesorID}, function(err,data_user){
 								var mu = data_user.valoracionMedia;
 								var num_val = data_user.numeroValoraciones;
