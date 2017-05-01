@@ -16,7 +16,7 @@ var config = {
 	puerto: 8080,
 
 	// JsonWebToken
-	TIME_EXPIRE : '15m',
+	TIME_EXPIRE : '12h',
 	secret : 'approf',
 
 	// Salt para el hash de passwords

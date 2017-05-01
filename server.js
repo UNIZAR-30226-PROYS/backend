@@ -48,7 +48,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 app.use(morgan('dev'));
 
 // Middleware que parsea el token y extrae los credenciales de sesión
-app.use(auth_middleware);
+//app.use(auth_middleware);
 
 // Ruta predeterminada
 app.get('*', function(req, res) {

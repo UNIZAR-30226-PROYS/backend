@@ -13,13 +13,13 @@ var profesorSchema = new Schema({
 	email: {type: String,required: true},
 
 	diasPromocionRestantes: {type: Number,default: 0},
-	precioHora: {type: Number,required:true},
+	precioHora: {type: Number, default: 0},
 	ciudad: {type: String,required:true},
-	horarios: [{type: String,required: true}],
-	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura',required: true}],
+	horarios: [{type: String,default: ""}],
+	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura'}],
 	
-	valoracionMedia: {type:Number,required:true},
-	numeroValoraciones: {type:Number,required:true,default:0}
+	valoracionMedia: {type:Number},
+	numeroValoraciones: {type:Number,default:0}
 });
  
 module.exports=mongoose.model('Profesor',profesorSchema);

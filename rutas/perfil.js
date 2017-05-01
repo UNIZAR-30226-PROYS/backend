@@ -14,7 +14,6 @@ module.exports = function (app)
 		// Solo se devolverá la info si el usuario se encuentra logeado
 		if (req.decoded) 
 		{
-			// Es un alumno
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
 				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, function(error, data) {
@@ -24,7 +23,8 @@ module.exports = function (app)
 							success: false,
 							message: 'Error obteniendo la informacion'
 						});
-					} else 
+					} 
+					else 
 					{
 						res.json(data);
 					}
@@ -83,11 +83,12 @@ module.exports = function (app)
 	app.post('/api/perfil/set', auth, function (req, res) {
 		if (req.decoded && !_.isEmpty(req.body))
 		{
-			// Es un alumno
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
+				console.log("JSON SET");
+				console.log(req.body);
 				modelos[req.decoded.tipo].update({userName: req.decoded.user.userName}, req.body, function(err, n_updates) {
-					if (!err || n_updates == 0)
+					if (err || n_updates == 0)
 					{
 						res.status(500).json({
 							success: false,
