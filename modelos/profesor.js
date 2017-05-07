@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 
 
 var profesorSchema = new Schema({ 
-	nombre: {type: String, required: true},
-	apellidos: {type: String, required: true},
+	nombre: {type: String},
+	apellidos: {type: String},
 	telefono: {type: String,required:true},
 	userName: {type: String, required: true, index: true, unique: true},
 	password: {type: String, required: true},
@@ -19,7 +19,7 @@ var profesorSchema = new Schema({
 	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura'}],
 	
 	cursos: [{type:String,default:""}],
-	experiencia: {type:String,default:""},
+	experiencia: {type:String, required: true, default:""},
 	modalidad: {type:String,default:""},
 	
 	valoracionMedia: {type:Number},

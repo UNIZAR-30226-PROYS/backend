@@ -28,7 +28,6 @@ module.exports = function (app)
 			modelos[req.body.tipo].findOne({userName: req.body.userName}, function(err, data){
 				if (err || !data) {
 					console.log(chalk.red("Error usuario " + req.body.username + " o contraseña " + req.body.password));
-					console.log(data);
 					res.status(403).json({
 						success: false,
 						message: 'Usuario o contraseña incorrectos'
@@ -71,36 +70,29 @@ module.exports = function (app)
 	app.post('/api/register', function(req, res)
 	{
 		var datos = null;
-		console.log(req.body);
-		if (req.body.tipo && req.body.tipo == 0)
+		if (req.body && req.body.tipo == 0)
 		{
-			console.log("1");
-			if (req.body.nombre && req.body.apellidos && req.body.telefono && req.body.userName && req.body.password && req.body.email)
+			if (req.body.userName && req.body.password)
 			{
 				config.saltInit(false);
 				datos = {
-					nombre: req.body.nombre,
-			        apellidos: req.body.apellidos,
-			     	telefono: req.body.telefono,
 			     	userName: req.body.userName,
 			     	password: bcrypt.hashSync(req.body.password, config.salt),
-			     	email: req.body.email,
 			     	sesion: bcrypt.genSaltSync(10)
 			    };
 			}
 		}
-		else if (req.body.tipo && req.body.tipo == 1)
+		else if (req.body && req.body.tipo == 1)
 		{
-			if(req.body.nombre && req.body.apellidos && req.body.telefono && req.body.userName && req.body.password && req.body.email && req.body.ciudad) {
+			if (req.body.telefono && req.body.userName && req.body.password && req.body.email && req.body.ciudad && req.body.experiencia) {
 				config.saltInit(false);
 				datos = {
-					nombre: req.body.nombre,
-			        apellidos: req.body.apellidos,
 			     	telefono: req.body.telefono,
 			     	userName: req.body.userName,
 			     	password: bcrypt.hashSync(req.body.password, config.salt),
 			     	email: req.body.email,
 			     	ciudad: req.body.ciudad,
+			     	experiencia: req.body.experiencia,
 			     	sesion: bcrypt.genSaltSync(10)
 			    };
 			}
@@ -108,6 +100,7 @@ module.exports = function (app)
 
 		if (datos == null)
 		{
+			console.log("No se ha definido la informacion");
 			res.status(400).json({
 				succes: false,
 				message: 'Faltan campos por rellenar'
@@ -116,13 +109,12 @@ module.exports = function (app)
 			var newUser = new modelos[req.body.tipo] (datos);
 			newUser.save(function(err, me) {
 				if (err) {
-					console.log(err);
 					res.status(403).json({
 						success: false,
 						message: 'Nombre de usuario ya escogido'
 					});
 				} else {
-					console.log(chalk.green("Creado usuario " + req.body.username + " : " + req.body.password));
+					console.log(chalk.green("Creado usuario " + req.body.userName));
 					console.log(newUser);
 					var token_gen = jwt.sign({
 						user: {

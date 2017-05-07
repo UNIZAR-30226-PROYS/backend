@@ -10,7 +10,7 @@ var _ = require('lodash');
 
 module.exports = function (app) 
 {
-	app.get('/api/perfil/get', auth, function(req,res) {
+	app.get('/api/perfil/info', auth, function(req,res) {
 		// Solo se devolverá la info si el usuario se encuentra logeado
 		if (req.decoded) 
 		{
