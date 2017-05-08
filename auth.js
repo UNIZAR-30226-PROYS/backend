@@ -36,11 +36,17 @@ module.exports = function (req, res, next) {
 					}
 				});
 			} else {
-				next();
+				res.status(500).json({
+					success: false,
+					message: 'Error validando token'
+				});
 			}
 		});
 	} else {
 		console.log(chalk.red('No se ha validado token'));
-		next();
+		res.status(500).json({
+			success: false,
+			message: 'No se ha validado el token'
+		});
 	}
 }
