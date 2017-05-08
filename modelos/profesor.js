@@ -19,7 +19,7 @@ var profesorSchema = new Schema({
 	asignaturas: [{type: Schema.Types.ObjectId, ref: 'Asignatura'}],
 	
 	cursos: [{type:String,default:""}],
-	experiencia: {type:String, required: true, default:""},
+	experiencia: {type:String,default:""},
 	modalidad: {type:String,default:""},
 	
 	valoracionMedia: {type:Number},
