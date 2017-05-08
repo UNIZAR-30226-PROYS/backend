@@ -30,6 +30,8 @@ module.exports = function (app)
 		query["$and"]=[];
 		if(req.query.ciudad){ query["$and"].push({ciudad: req.query.ciudad});}
 		if(req.query.precioHora){ query["$and"].push({precioHora: req.query.precioHora});}
+		if(req.query.horario){ query["$and"].push({horario: req.query.horario});}
+		if(req.query.nombre){ query["$and"].push({nombre: req.query.nombre});}
 		if(req.query.asignatura)
 		{
 			if(req.query.nivel)	//Busca el _id de la asignatura/nivel y lo añade a la query
@@ -88,7 +90,8 @@ function lanzarQuery(err, res, query) {
 	else
 	{
 		modelos[0].find(query,
-			{nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1},
+			{nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1, valoracionMedia: 1},
+			{sort: {valoracionMedia: -1}},
 			function (error, data) {
 				console.log(data);
 				if (error || !data)
