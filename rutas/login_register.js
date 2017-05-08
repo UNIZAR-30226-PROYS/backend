@@ -5,6 +5,8 @@ var modelos = Array(n_modelos);
 modelos[0] = require('../modelos/alumno');
 modelos[1] = require('../modelos/profesor');
 
+var Asignatura = require('../modelos/asignatura');
+
 var config = require('../config');
 
 var chalk = require('chalk');
@@ -121,23 +123,39 @@ module.exports = function (app)
 						message: 'Nombre de usuario ya escogido'
 					});
 				} else {
-					console.log(chalk.green("Creado usuario " + req.body.userName));
-					console.log(newUser);
-					var token_gen = jwt.sign({
-						user: {
-							username : newUser.userName,
-							nombre : newUser.nombre,
-							apellidos: newUser.apellidos,
-							sesion: newUser.sesion
-						},
-						tipo: req.body.tipo
-						}, config.secret, {
-							expiresIn: config.TIME_EXPIRE // 24 horas
+					asignaturasIDS = new Array();
+					asignaturas = req.body.asignaturas.split(",");
+
+					async.each(asignaturas, function(asig, next){
+						asignatura.findOne({nombre: asig}, function(err,data){
+							if (!err)
+							{
+								asignaturasIDS.push(data._id);
+								next()
+							}
+						});
 					});
-					res.status(200).json({
-						success: true,
-						message: 'Registrado correctamente el usuario',
-						token: token_gen
+
+					me.asignaturas = asignaturas;
+					me.save(function(err){
+						console.log(chalk.green("Creado usuario " + req.body.userName));
+						console.log(newUser);
+						var token_gen = jwt.sign({
+							user: {
+								username : newUser.userName,
+								nombre : newUser.nombre,
+								apellidos: newUser.apellidos,
+								sesion: newUser.sesion
+							},
+							tipo: req.body.tipo
+							}, config.secret, {
+								expiresIn: config.TIME_EXPIRE // 24 horas
+						});
+						res.status(200).json({
+							success: true,
+							message: 'Registrado correctamente el usuario',
+							token: token_gen
+						});
 					});
 				}
 			});
