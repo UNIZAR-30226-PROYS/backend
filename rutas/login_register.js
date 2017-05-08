@@ -13,6 +13,7 @@ var chalk = require('chalk');
 var _ = require('lodash');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
+var async = require('async');
 
 module.exports = function (app) 
 {
