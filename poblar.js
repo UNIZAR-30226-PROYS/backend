@@ -71,10 +71,10 @@ function populate(next){
 			console.log("insertando");
 			hashed_pass = bcrypt.hashSync('profesor' + i);
 			var newProfesor = new Profesor({
-				nombre:'Benito',
-				apellidos:'Camelas ' + i,
+				nombre:'nombre' + i,
+				apellidos:'apellidos' + i,
 				telefono:696696900 + i,
-				userName:'Maria Unpajote' + i,
+				userName:'profesor' + i,
 				password: hashed_pass,
 				email:'zanahorio55@hotmail.com',
 				diasPromocionRestantes:i,
