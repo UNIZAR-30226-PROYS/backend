@@ -4,7 +4,7 @@ var auth = require('../auth');
 
 module.exports = function (app) 
 {
-	app.get('/api/asignaturas/get', auth, function(req, res){
+	app.get('/api/asignaturas/get', function(req, res){
 		Asignatura.find({}, function(err, data){
 			if (!err && data)
 			{
