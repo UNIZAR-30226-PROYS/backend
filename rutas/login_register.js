@@ -70,9 +70,9 @@ module.exports = function (app)
 	app.post('/api/register', function(req, res)
 	{
 		var datos = null;
-		if (req.body && req.body.tipo == 0)
+		if (req.body.tipo != undefined && req.body.tipo == 0)
 		{
-			if (req.body.userName && req.body.password)
+			if (req.body.userName != undefined && req.body.password != undefined)
 			{
 				config.saltInit(false);
 				datos = {
@@ -89,18 +89,19 @@ module.exports = function (app)
 				&& req.body.horarios != undefined && req.body.asignaturas != undefined 
 				&& req.body.cursos != undefined && req.body.experiencia != undefined 
 				&& req.body.modalidad != undefined) {
-				config.saltInit(false);
-				datos = {
-			     	telefono: req.body.telefono,
-			     	userName: req.body.userName,
-			     	password: bcrypt.hashSync(req.body.password, config.salt),
-			     	email: req.body.email,
-			     	ciudad: req.body.ciudad,
-			     	horarios: req.body.horarios,
-			     	experiencia: req.body.experiencia,
-			     	cursos: req.body.cursos,
-			     	sesion: bcrypt.genSaltSync(10)
-			    };
+
+					config.saltInit(false);
+					datos = {
+				     	telefono: req.body.telefono,
+				     	userName: req.body.userName,
+				     	password: bcrypt.hashSync(req.body.password, config.salt),
+				     	email: req.body.email,
+				     	ciudad: req.body.ciudad,
+				     	horarios: req.body.horarios,
+				     	experiencia: req.body.experiencia,
+				     	cursos: req.body.cursos,
+				     	sesion: bcrypt.genSaltSync(10)
+				    };
 			}
 		}
 
