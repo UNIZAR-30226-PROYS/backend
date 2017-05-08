@@ -16,7 +16,7 @@ module.exports = function (app)
 {
 	app.post('/api/login', function(req, res)
 	{
-		if (_.isEmpty(req.body) || !req.body.userName || !req.body.password || !req.body.tipo)
+		if (_.isEmpty(req.body) || !req.body.userName || !req.body.password || !(req.body.tipo == undefined))
 		{
 			res.status(400).json({
 				succes: false,
@@ -84,7 +84,11 @@ module.exports = function (app)
 		}
 		else if (req.body && req.body.tipo == 1)
 		{
-			if (req.body.telefono && req.body.userName && req.body.password && req.body.email && req.body.ciudad && req.body.experiencia) {
+			if (req.body.telefono != undefined && req.body.userName != undefined && req.body.password != undefined 
+				&& req.body.email != undefined && req.body.ciudad != undefined
+				&& req.body.horarios != undefined && req.body.asignaturas != undefined 
+				&& req.body.cursos != undefined && req.body.experiencia != undefined 
+				&& req.body.modalidad != undefined) {
 				config.saltInit(false);
 				datos = {
 			     	telefono: req.body.telefono,
@@ -92,7 +96,9 @@ module.exports = function (app)
 			     	password: bcrypt.hashSync(req.body.password, config.salt),
 			     	email: req.body.email,
 			     	ciudad: req.body.ciudad,
+			     	horarios: req.body.horarios,
 			     	experiencia: req.body.experiencia,
+			     	cursos: req.body.cursos,
 			     	sesion: bcrypt.genSaltSync(10)
 			    };
 			}
