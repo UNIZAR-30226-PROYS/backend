@@ -16,7 +16,7 @@ module.exports = function (app)
 {
 	app.post('/api/login', function(req, res)
 	{
-		if (_.isEmpty(req.body) || !req.body.userName || !req.body.password || !(req.body.tipo == undefined))
+		if (_.isEmpty(req.body) || req.body.userName != undefined || req.body.password == undefined || req.body.tipo == undefined)
 		{
 			res.status(400).json({
 				succes: false,
