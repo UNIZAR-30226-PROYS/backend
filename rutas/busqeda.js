@@ -10,8 +10,8 @@ var _ = require('lodash');
 module.exports = function (app)
 {
 	//Descomentar lineas para que pida autorizacion antes de buscar
-	app.post('/api/busqueda',auth, function (req, res) {
-		if (req.decoded) {
+	app.post('/api/busqueda', function (req, res) {
+		//if (req.decoded) {
 			//Parametros de la busqueda: asignatura, nivel, ciudad, precioHora
 		//console.log(req)
 			if (_.isEmpty(req.body))
@@ -26,14 +26,14 @@ module.exports = function (app)
 			{
 				construirQuery(req, res, lanzarQuery);
 		 	}
-		}
-		else
-		{
-			res.status(500).json({
-				success: false,
-				message: 'Se ha prohibido el acceso'
-			});
-		}
+		// }
+		// else
+		// {
+		// 	res.status(500).json({
+		// 		success: false,
+		// 		message: 'Se ha prohibido el acceso'
+		// 	});
+		// }
 	});
 
 	function construirQuery(req, res, lanzarQuery)
@@ -47,25 +47,30 @@ module.exports = function (app)
 		if(req.body.precioHora){ query["$and"].push({precioHora: req.body.precioHora});}
 		if(req.body.horarios && JSON.stringify(req.body.horarios) != "[]")
 		{
-			try {
-				var prueba = eval('(' + req.body.horarios + ')')
-				aux = { $in: prueba}
-				query["$and"].push({horarios: aux});
-			} catch (_error) {
-				console.log("error en array")
-				err = new Error("El array de horarios no tiene un formato valido")
-			}
+			// try {
+				query["$and"].push({horarios: { $in: req.body.horarios}});
+			// } catch (_error) {
+			// 	console.log("error en array")
+			// 	err = new Error("El array de horarios no tiene un formato valido")
+			// }
 		}
 		if(req.body.nombre){ query["$and"].push({userName: req.body.nombre});}
-		if(req.body.asignatura)
+		console.log(req.body.asignaturas)
+		console.log(req.body.cursos)
+		if(req.body.asignaturas && JSON.stringify(req.body.asignaturas) != "[]")
 		{
-			if(req.body.nivel)	//Busca el _id de la asignatura/nivel y lo añade a la query
+			if(req.body.cursos && JSON.stringify(req.body.cursos) != "[]")	//Busca el _id de la asignatura/nivel y lo añade a la query
 			{
-				modelos[1].findOne({nombre: req.body.asignatura, nivel: req.body.nivel}, function (err, data) {
+				// var asAux = eval('(' + req.body.asignaturas + ')')
+				// var curAux = eval('(' + req.body.cursos + ')')
+				// aux1 = { $in: asAux}
+				// aux2 = { $in: curAux}
+
+				modelos[1].find({nombre: { $in : req.body.asignaturas} , nivel: { $in: req.body.cursos}}, function (err, data) {
 					console.log(data);
 					if (err || !data)
 					{
-						if(!err) err = new Error("No existe ninguna asignatura con ese nombre/nivel");
+						if(!err) err = new Error("No existe ninguna asignatura con ese nombre/cursos");
 						lanzarQuery(err,res, query);
 					}
 					else
@@ -77,7 +82,10 @@ module.exports = function (app)
 			}
 			else		//Busca todos lo id de la asignatura a todos los niveles
 			{
-				modelos[1].find({nombre: req.body.asignatura}, {_id: 1}, function (err, data) {
+				// var asAux = eval('(' + req.body.asignaturas + ')')
+				// aux1 = { $in: asAux}
+
+				modelos[1].find({nombre: { $in: req.body.asignaturas}}, {_id: 1}, function (err, data) {
 					console.log(data);
 					if (err || !data.length)
 					{
@@ -106,7 +114,7 @@ function lanzarQuery(err, res, query) {
 	if (err || (JSON.stringify(query) === EmptyQuery))
 	{
 		if(!err) err = new Error("No hay ningun parametro de busqueda valido");
-		//console.log(err);
+		console.log(err);
 		res.status(400).json({
 			success: false,
 			message: err.toString()
@@ -115,7 +123,8 @@ function lanzarQuery(err, res, query) {
 	else
 	{
 		modelos[0].find(query,
-			{userName: 1, nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1, valoracionMedia: 1},
+			{userName: 1, nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1,
+				ciudad: 1, horarios: 1, valoracionMedia: 1, horarios:1, asignaturas: 1},
 			{sort: {valoracionMedia: -1}},
 			function (error, data) {
 				console.log(data);
