@@ -10,11 +10,13 @@ var _ = require('lodash');
 module.exports = function (app)
 {
 	//Descomentar lineas para que pida autorizacion antes de buscar
-	app.post('/api/busqueda', auth, function (req, res) {
-		// if (req.decoded) {
+	app.post('/api/busqueda',auth, function (req, res) {
+		if (req.decoded) {
 			//Parametros de la busqueda: asignatura, nivel, ciudad, precioHora
+		//console.log(req)
 			if (_.isEmpty(req.body))
 			{
+				console.log("Peticion con campos vacios");
 				res.status(400).json({
 					succes: false,
 					message: 'Los campos de busqueda estan vacios'
@@ -24,23 +26,36 @@ module.exports = function (app)
 			{
 				construirQuery(req, res, lanzarQuery);
 		 	}
-		// }
-		// else
-		// {
-		// 	res.status(500).json({
-		// 		success: false,
-		// 		message: 'Se ha prohibido el acceso'
-		// 	});
-		// }
+		}
+		else
+		{
+			res.status(500).json({
+				success: false,
+				message: 'Se ha prohibido el acceso'
+			});
+		}
 	});
 
 	function construirQuery(req, res, lanzarQuery)
 	{
+
+		console.log("Construyendo query")
+		err = null;
 		var query = {}; 			//Construimos la query en funcion de los parametros rellenados
 		query["$and"]=[];
 		if(req.body.ciudad){ query["$and"].push({ciudad: req.body.ciudad});}
 		if(req.body.precioHora){ query["$and"].push({precioHora: req.body.precioHora});}
-		if(req.body.horario){ query["$and"].push({horario: req.body.horario});}
+		if(req.body.horarios && JSON.stringify(req.body.horarios) != "[]")
+		{
+			try {
+				var prueba = eval('(' + req.body.horarios + ')')
+				aux = { $in: prueba}
+				query["$and"].push({horarios: aux});
+			} catch (_error) {
+				console.log("error en array")
+				err = new Error("El array de horarios no tiene un formato valido")
+			}
+		}
 		if(req.body.nombre){ query["$and"].push({userName: req.body.nombre});}
 		if(req.body.asignatura)
 		{
@@ -79,14 +94,14 @@ module.exports = function (app)
 		}
 		else
 		{
-			lanzarQuery(null,res, query);
+			lanzarQuery(err,res, query);
 		}
 	}
 };
 
 //2o parametro 'proyecciones' para solo devolver los campos que debe ver el usuario
 function lanzarQuery(err, res, query) {
-	console.log(query);
+	console.log(JSON.stringify(query));
 
 	if (err || (JSON.stringify(query) === EmptyQuery))
 	{
@@ -100,7 +115,7 @@ function lanzarQuery(err, res, query) {
 	else
 	{
 		modelos[0].find(query,
-			{userName:1, nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1, valoracionMedia: 1},
+			{userName: 1, nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1, ciudad: 1, horarios: 1, valoracionMedia: 1},
 			{sort: {valoracionMedia: -1}},
 			function (error, data) {
 				console.log(data);
