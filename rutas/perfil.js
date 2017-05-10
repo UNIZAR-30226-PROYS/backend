@@ -116,10 +116,10 @@ module.exports = function (app)
 							var i = 0;
 
 							async.each(asignaturas, function(asig, next){
-								Asignatura.findOne({nombre: asig}, function(err,data){
+								Asignatura.findOne({nombre: asig}, function(err,dataAsig){
 									if (!err)
 									{
-										data.asignaturas.push(data._id);
+										data.asignaturas.push(dataAsig._id);
 										i++;
 
 										if (i == n)
