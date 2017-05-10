@@ -92,7 +92,7 @@ module.exports = function (app)
 		{
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
-				modelos[req.decoded.tipo].findOne({userName: req.decoded.userName}, function(err, data){
+				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, function(err, data){
 					if (err || !data)
 					{
 						res.status(500).json({
