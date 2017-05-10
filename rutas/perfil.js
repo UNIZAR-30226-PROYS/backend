@@ -10,13 +10,15 @@ var _ = require('lodash');
 
 module.exports = function (app) 
 {
-	app.get('/api/perfil/info', auth, function(req,res) {
+	app.get('/api/perfil/info', function(req,res) {
 		// Solo se devolverá la info si el usuario se encuentra logeado
 		if (req.decoded) 
 		{
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
-				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, function(error, data) {
+				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, { _id: 0, password: 0, session: 0})
+				                         .populate("asignaturas", ["nombre"])
+				                         .exec(function(error, data) {
 					if (error || !data)
 					{
 						res.status(403).json({
@@ -33,10 +35,26 @@ module.exports = function (app)
 		}
 		else
 		{
-			res.status(500).json({
+			/*res.status(500).json({
 				success: false,
 				message: 'Se ha prohibido el acceso'
-			});
+			});*/
+			modelos[1].findOne({userName: "profesor1"}, { _id: 0, __v: 0, password: 0, session: 0})
+				                         .populate("asignaturas", ["nombre"])
+				                         .select("-_id")
+				                         .exec(function(error, data) {
+					if (error || !data)
+					{
+						res.status(403).json({
+							success: false,
+							message: 'Error obteniendo la informacion'
+						});
+					} 
+					else 
+					{
+						res.json(data);
+					}
+				});
 		}
 	});
 
@@ -85,7 +103,6 @@ module.exports = function (app)
 		{
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
-				console.log("JSON SET");
 				console.log(req.body);
 				modelos[req.decoded.tipo].update({userName: req.decoded.user.userName}, req.body, function(err, n_updates) {
 					if (err || n_updates == 0)

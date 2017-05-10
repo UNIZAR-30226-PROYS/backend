@@ -87,7 +87,8 @@ module.exports = function (app)
 		}
 		else if (req.body && req.body.tipo == 1)
 		{
-			if (req.body.telefono != undefined && req.body.userName != undefined && req.body.password != undefined 
+			if (req.body.telefono != undefined && req.body.userName != undefined 
+				&& req.body.password != undefined 
 				&& req.body.email != undefined && req.body.ciudad != undefined
 				&& req.body.horarios != undefined && req.body.asignaturas != undefined 
 				&& req.body.cursos != undefined && req.body.experiencia != undefined 
@@ -102,6 +103,7 @@ module.exports = function (app)
 				     	ciudad: req.body.ciudad,
 				     	horarios: req.body.horarios,
 				     	experiencia: req.body.experiencia,
+				     	modalidad: req.body.modalidad,
 				     	cursos: req.body.cursos,
 				     	sesion: bcrypt.genSaltSync(10)
 				    };
@@ -117,48 +119,51 @@ module.exports = function (app)
 			});
 		} else {
 			var newUser = new modelos[req.body.tipo] (datos);
-			newUser.save(function(err, me) {
-				if (err) {
-					res.status(403).json({
-						success: false,
-						message: 'Nombre de usuario ya escogido'
-					});
-				} else {
-					asignaturasIDS = new Array();
-					asignaturas = req.body.asignaturas.split(",");
+			asignaturas = req.body.asignaturas.split(",");
+			
+			var n = asignaturas.length;
+			var i = 0;
 
-					async.each(asignaturas, function(asig, next){
-						asignatura.findOne({nombre: asig}, function(err,data){
-							if (!err)
-							{
-								asignaturasIDS.push(data._id);
-								next()
-							}
-						});
-					});
+			async.each(asignaturas, function(asig, next){
+				Asignatura.findOne({nombre: asig}, function(err,data){
+					if (!err)
+					{
+						newUser.asignaturas.push(data._id);
+						i++;
 
-					me.asignaturas = asignaturas;
-					me.save(function(err){
-						console.log(chalk.green("Creado usuario " + req.body.userName));
-						console.log(newUser);
-						var token_gen = jwt.sign({
-							user: {
-								username : newUser.userName,
-								nombre : newUser.nombre,
-								apellidos: newUser.apellidos,
-								sesion: newUser.sesion
-							},
-							tipo: req.body.tipo
-							}, config.secret, {
-								expiresIn: config.TIME_EXPIRE // 24 horas
-						});
-						res.status(200).json({
-							success: true,
-							message: 'Registrado correctamente el usuario',
-							token: token_gen
-						});
-					});
-				}
+						if (i == n)
+						{	
+							newUser.save(function(err, me) {
+								if (err) {
+									res.status(403).json({
+										success: false,
+										message: 'Nombre de usuario ya escogido'
+									});
+								} else {
+									console.log(chalk.green("Creado usuario " + me.userName));
+									console.log(me);
+									var token_gen = jwt.sign({
+										user: {
+											username : newUser.userName,
+											nombre : newUser.nombre,
+											apellidos: newUser.apellidos,
+											sesion: newUser.sesion
+										},
+										tipo: req.body.tipo
+										}, config.secret, {
+											expiresIn: config.TIME_EXPIRE // 24 horas
+									});
+									res.status(200).json({
+										success: true,
+										message: 'Registrado correctamente el usuario',
+										token: token_gen
+									});
+								}
+							});
+						}
+					}
+					next();
+				});
 			});
 		}
 	});
