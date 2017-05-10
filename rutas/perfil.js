@@ -10,6 +10,7 @@ var Asignatura = require('../modelos/asignatura');
 var auth = require('../auth');
 var _ = require('lodash');
 var async = require('async');
+var chalk = require('chalk');
 
 module.exports = function (app) 
 {
@@ -114,6 +115,8 @@ module.exports = function (app)
 							var asignaturas = req.body.asignaturas.split(",");
 							var n = asignaturas.length;
 							var i = 0;
+
+							data.asignaturas = [];
 
 							async.each(asignaturas, function(asig, next){
 								Asignatura.findOne({nombre: asig}, function(err,dataAsig){
