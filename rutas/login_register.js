@@ -28,9 +28,10 @@ module.exports = function (app)
 		}
 		else
 		{
+			console.log(req.body);
 			modelos[req.body.tipo].findOne({userName: req.body.userName}, function(err, data){
 				if (err || !data) {
-					console.log(chalk.red("Error usuario " + req.body.username + " o contraseña " + req.body.password));
+					console.log(chalk.red("Error usuario " + req.body.userName));
 					res.status(403).json({
 						success: false,
 						message: 'Usuario o contraseña incorrectos'
@@ -40,7 +41,7 @@ module.exports = function (app)
 					// Hash de la contraseña del token
 					var pass_hash = bcrypt.hashSync(req.body.password, config.salt);
 					// Si no ha habido error en la búsqueda, compara las contraseñas
-					if (pass_hash == data.password) {
+					if (pass_hash === data.password) {
 						var token_gen = jwt.sign({
 								user: {
 									userName : data.userName,
@@ -50,7 +51,7 @@ module.exports = function (app)
 								},
 								tipo: req.body.tipo
 							}, config.secret, {
-								expiresIn: config.TIME_EXPIRE // 24 horas
+								//expiresIn: config.TIME_EXPIRE // 24 horas
 							});
 						console.log(chalk.green('Logeado correctamente usuario ') + chalk.underline(data.userName));
 						res.status(200).json({
@@ -59,7 +60,7 @@ module.exports = function (app)
 							token: token_gen
 						});
 					} else {
-						console.log(chalk.red("Error usuario " + req.body.username + " o contraseña " + req.body.password));
+						console.log(chalk.red("contraseña " + pass_hash + " | " + data.password));
 						return res.status(403).json({
 							success: false,
 							message: 'Usuario o contraseña incorrectos'
@@ -151,7 +152,7 @@ module.exports = function (app)
 										},
 										tipo: req.body.tipo
 										}, config.secret, {
-											expiresIn: config.TIME_EXPIRE // 24 horas
+											//expiresIn: config.TIME_EXPIRE // 24 horas
 									});
 									res.status(200).json({
 										success: true,
@@ -231,7 +232,7 @@ module.exports = function (app)
 								},
 								config.secret,
 								{
-									expiresIn: config.TIME_EXPIRE // 24 horas
+									//expiresIn: config.TIME_EXPIRE // 24 horas
 								}
 							);
 

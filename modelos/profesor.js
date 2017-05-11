@@ -22,7 +22,7 @@ var profesorSchema = new Schema({
 	experiencia: {type:String,default:""},
 	modalidad: {type:String,default:""},
 	
-	valoracionMedia: {type:Number},
+	valoracionMedia: {type:Number, default: 0},
 	numeroValoraciones: {type:Number,default:0}
 });
  

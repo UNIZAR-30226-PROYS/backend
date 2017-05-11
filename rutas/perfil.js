@@ -88,6 +88,36 @@ module.exports = function (app)
 		}
 	});
 
+	app.post('/api/perfil/profesor', auth, function(req,res)
+	{
+		console.log("Llamada a perfil/profesor");
+		if (req.decoded && req.body.profesor)
+		{
+			modelos[1].findOne({userName: req.body.profesor}, {_id: 0, password: 0, __v: 0, session: 0})
+					  .populate("asignaturas", ["nombre"])
+					  .exec(function(err, data)
+			{
+				if (err || !data)
+				{
+					res.status(500).json({
+						success: false,
+						message: 'No se ha encontrado al profesor'
+					});
+				} else {
+					console.log(data.asignaturas);
+					res.status(200).json(data);
+				}
+			});
+		}
+		else
+		{
+			res.status(403).json({
+				success: false,
+				message: 'No se ha enviado informacion del profesor'
+			});
+		}
+	});
+
 	app.post('/api/perfil/set', auth, function (req, res) {
 		if (req.decoded && !_.isEmpty(req.body))
 		{

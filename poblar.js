@@ -56,10 +56,12 @@ function populate(next){
 		n[i] = i;
 	}
 
+	config.saltInit(false);
+
 	console.log("eliminado todo");
 	async.each(n, function(i, callback) {
 		
-		var hashed_pass = bcrypt.hashSync('alumno' + i);
+		var hashed_pass = bcrypt.hashSync('alumno' + i, config.salt);
 		var newAlumno = new Alumno({
 			userName: 'alumno' + i,
 			password: hashed_pass,
@@ -69,7 +71,7 @@ function populate(next){
 		addedAlumnos.push(newAlumno);
 		newAlumno.save(function(err,data){
 			console.log("insertando");
-			hashed_pass = bcrypt.hashSync('profesor' + i);
+			hashed_pass = bcrypt.hashSync('profesor' + i, config.salt);
 			var newProfesor = new Profesor({
 				nombre:'nombre' + i,
 				apellidos:'apellidos' + i,
