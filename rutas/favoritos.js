@@ -131,7 +131,7 @@ module.exports = function (app)
 						var respuesta = [];
 						for (var i = 0; i < data.length; i++)
 						{
-							respuesta.push(data);
+							respuesta.push(data[i].profesor);
 						} 
 						res.status(200).json(respuesta);
 					}
