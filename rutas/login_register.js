@@ -44,6 +44,7 @@ module.exports = function (app)
 					if (pass_hash === data.password) {
 						var token_gen = jwt.sign({
 								user: {
+									_id : data._id,
 									userName : data.userName,
 									nombre : data.nombre,
 									apellidos: data.apellidos,
@@ -145,6 +146,7 @@ module.exports = function (app)
 									console.log(me);
 									var token_gen = jwt.sign({
 										user: {
+											_id : newUser._id,
 											username : newUser.userName,
 											nombre : newUser.nombre,
 											apellidos: newUser.apellidos,

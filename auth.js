@@ -28,8 +28,8 @@ module.exports = function (req, res, next) {
 
 	if (token) {
 		jwt.verify(token, config.secret, function(err, deco) {
-			console.log(chalk.yellow("Validando usuario " + deco.user.userName + " -> Tipo : " + deco.tipo));
 			if (!err && deco.user !== undefined && deco.tipo !== undefined) {
+				console.log(chalk.yellow("Validando usuario " + deco.user.userName + " -> Tipo : " + deco.tipo));
 				modelos[deco.tipo].findOne({userName: deco.user.userName}, function(err, data) {
 					if (!err && data && data.sesion === deco.user.sesion) {
 						console.log(chalk.green("Validado usuario " + deco.user.userName));
