@@ -46,6 +46,7 @@ function populate(next){
 			
 		]);
 
+	config.saltInit(false);
 	var addedAlumnos = [];
 	var addedProfesores = [];
 	var addedAsignaturas = [];
@@ -56,12 +57,10 @@ function populate(next){
 		n[i] = i;
 	}
 
-	config.saltInit(false);
-
 	console.log("eliminado todo");
 	async.each(n, function(i, callback) {
 		
-		var hashed_pass = bcrypt.hashSync('alumno' + i, config.salt);
+		var hashed_pass = bcrypt.hashSync('alumno' + i,config.salt);
 		var newAlumno = new Alumno({
 			userName: 'alumno' + i,
 			password: hashed_pass,
@@ -71,7 +70,7 @@ function populate(next){
 		addedAlumnos.push(newAlumno);
 		newAlumno.save(function(err,data){
 			console.log("insertando");
-			hashed_pass = bcrypt.hashSync('profesor' + i, config.salt);
+			hashed_pass = bcrypt.hashSync('profesor' + i,config.salt);
 			var newProfesor = new Profesor({
 				nombre:'nombre' + i,
 				apellidos:'apellidos' + i,
@@ -89,9 +88,53 @@ function populate(next){
 
 			newProfesor.save(function(err){
 
+
+				var materia;
+				var lvl;
+				if (i == 0) {
+					materia = 'Matematicas';
+					lvl = "ESO"; 
+				}
+				else if (i == 1){
+					materia = "Lengua castellana";
+					lvl = "Bachillerato"; 
+				}
+				else if (i == 2){
+					materia = "Programacion I";
+					lvl = "1º Ingenieria informatica"; 
+				}
+				else if (i == 3){
+					materia = "Educacion fisica";
+					lvl = "Infantil"; 
+				}
+				else if (i == 4){
+					materia = "Latin";
+					lvl = "Bachillerato"; 
+				}
+				else if (i == 5){
+					materia = "AOC1";
+					lvl = "1º Ingenieria informatica"; 
+				}
+				else if (i == 6){
+					materia = "Fisica y electronica";
+					lvl = "1º Ingenieria informatica"; 
+				}
+				else if (i == 7){
+					materia = "Estadistica";
+					lvl = "1º Ingenieria informatica"; 
+				}
+				else if (i == 8){
+					materia = "Programacion II";
+					lvl = "1º Ingenieria informatica"; 
+				}
+				else if (i == 9){
+					materia = "IC";
+					lvl = "1º Ingenieria informatica"; 
+				}
+
 				var newAsignatura = new Asignatura({
-					nombre:'Apostar en los galgos para dummies, version: ' + i,
-					nivel:'ludopatia sana ' + i
+					nombre:materia,
+					nivel:lvl
 				});
 
 				addedAsignaturas.push(newAsignatura);
@@ -152,7 +195,7 @@ db.once('open',function(){
 	console.log('HOLA');
 	populate(function (){
 		//For test
-		Profesor.find({},function(err,data){
+		Asignatura.find({},function(err,data){
 		if(err || !data){
 			console.log(err);
 		}
