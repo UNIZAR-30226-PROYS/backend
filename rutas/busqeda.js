@@ -10,10 +10,8 @@ var _ = require('lodash');
 module.exports = function (app)
 {
 	//Descomentar lineas y añadir el parametro auth para que pida autorizacion antes de buscar
-	app.post('/api/busqueda', function (req, res) {
-		//if (req.decoded) {
-			//Parametros de la busqueda: asignatura, nivel, ciudad, precioHora
-		//console.log(req)
+	app.post('/api/busqueda', auth, function (req, res) {
+		if (req.decoded) {
 			if (_.isEmpty(req.body))
 			{
 				console.log("Peticion con campos vacios");
@@ -26,19 +24,18 @@ module.exports = function (app)
 			{
 				construirQuery(req, res, lanzarQuery);
 		 	}
-		// }
-		// else
-		// {
-		// 	res.status(500).json({
-		// 		success: false,
-		// 		message: 'Se ha prohibido el acceso'
-		// 	});
-		// }
+		}
+		else
+		{
+			res.status(500).json({
+				success: false,
+				message: 'Se ha prohibido el acceso'
+			});
+		}
 	});
 
 	function construirQuery(req, res, lanzarQuery)
 	{
-
 		console.log("Construyendo query")
 		err = null;
 		var query = {}; 			//Construimos la query en funcion de los parametros rellenados
@@ -51,7 +48,7 @@ module.exports = function (app)
 		{
 			if(req.body.cursos && JSON.stringify(req.body.cursos) != "[]")	//Busca el _id de la asignatura/nivel y lo añade a la query
 			{
-				modelos[1].find({nombre: { $in : req.body.asignaturas} , nivel: { $in: req.body.cursos}}, function (err, data) {
+				modelos[1].find({nombre: { $in : req.body.asignaturas} , nivel: { $in: req.body.cursos}}, {_id: 1}, function (err, data) {
 					console.log(data);
 					if (err || !data)
 					{
@@ -60,7 +57,7 @@ module.exports = function (app)
 					}
 					else
 					{
-						query["$and"].push({asignaturas: data._id});
+						query["$and"].push({asignaturas: {$in: data}});
 						lanzarQuery(null,res,query);
 					}
 				});
