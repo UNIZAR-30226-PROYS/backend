@@ -16,11 +16,11 @@ module.exports = function (app)
 {
 	app.get('/api/perfil/info', auth, function(req,res) {
 		// Solo se devolverá la info si el usuario se encuentra logeado
-		if (req.decoded) 
+		if (req.decoded)
 		{
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
-				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, { _id: 0, password: 0, session: 0})
+				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, {password: 0, session: 0})
 				                         .populate("asignaturas", ["nombre"])
 				                         .exec(function(error, data) {
 					if (error || !data)
@@ -54,7 +54,7 @@ module.exports = function (app)
 			// Es un alumno
 			if(req.decoded.tipo >= 0 && req.decoded.tipo < n_modelos)
 			{
-				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, {_id: 0, __v: 0, password: 0, session: 0})
+				modelos[req.decoded.tipo].findOne({userName: req.decoded.user.userName}, {__v: 0, password: 0, session: 0})
 									     .populate("asignaturas", ["nombre"])
 									     .exec(function(error, data) {
 					if (error || !data)
@@ -93,7 +93,7 @@ module.exports = function (app)
 		console.log("Llamada a perfil/profesor");
 		if (req.decoded && req.body.profesor)
 		{
-			modelos[1].findOne({userName: req.body.profesor}, {_id: 0, password: 0, __v: 0, session: 0})
+			modelos[1].findOne({userName: req.body.profesor}, {password: 0, __v: 0, session: 0})
 					  .populate("asignaturas", ["nombre"])
 					  .exec(function(err, data)
 			{
