@@ -121,55 +121,67 @@ module.exports = function (app)
 			});
 		} else {
 			var newUser = new modelos[req.body.tipo] (datos);
-			asignaturas = req.body.asignaturas.split(",");
-			
-			var n = asignaturas.length;
-			var i = 0;
 
-			async.each(asignaturas, function(asig, next){
-				Asignatura.findOne({nombre: asig}, function(err,data){
-					if (!err)
-					{
-						newUser.asignaturas.push(data._id);
-						i++;
+			if (req.body.tipo != undefined && req.body.tipo == 0)
+			{
+				regUser(newUser,req,res)
+			}
+			else
+			{
+				asignaturas = req.body.asignaturas.split(",");
+				var n = asignaturas.length;
+				var i = 0;
 
-						if (i == n)
-						{	
-							newUser.save(function(err, me) {
-								if (err) {
-									res.status(403).json({
-										success: false,
-										message: 'Nombre de usuario ya escogido'
-									});
-								} else {
-									console.log(chalk.green("Creado usuario " + me.userName));
-									console.log(me);
-									var token_gen = jwt.sign({
-										user: {
-											_id : newUser._id,
-											username : newUser.userName,
-											nombre : newUser.nombre,
-											apellidos: newUser.apellidos,
-											sesion: newUser.sesion
-										},
-										tipo: req.body.tipo
-										}, config.secret, {
-											//expiresIn: config.TIME_EXPIRE // 24 horas
-									});
-									res.status(200).json({
-										success: true,
-										message: 'Registrado correctamente el usuario',
-										token: token_gen
-									});
-								}
-							});
+				async.each(asignaturas, function(asig, next){
+					Asignatura.findOne({nombre: asig}, function(err,data){
+						if (!err)
+						{
+							newUser.asignaturas.push(data._id);
+							i++;
+
+							if (i == n)
+							{
+								regUser(newUser,req,res)
+							}
 						}
-					}
-					next();
+						next();
+					});
 				});
-			});
+			}
 		}
 	});
+
+	function regUser(newUser,req, res)
+	{
+		newUser.save(function(err, me) {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					message: 'Nombre de usuario ya escogido'
+				});
+			} else {
+				console.log(chalk.green("Creado usuario " + me.userName));
+				console.log(me);
+				var token_gen = jwt.sign({
+					user: {
+						_id : newUser._id,
+						username : newUser.userName,
+						nombre : newUser.nombre,
+						apellidos: newUser.apellidos,
+						sesion: newUser.sesion
+					},
+					tipo: req.body.tipo
+				}, config.secret, {
+					//expiresIn: config.TIME_EXPIRE // 24 horas
+				});
+				res.status(200).json({
+					success: true,
+					message: 'Registrado correctamente el usuario',
+					token: token_gen
+				});
+			}
+		});
+	}
 
 	app.get('/api/logout', function(req, res)
 	{
