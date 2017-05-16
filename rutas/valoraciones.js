@@ -36,10 +36,7 @@ module.exports = function (app) {
 				else if (data) {
 					console.log("Valoracion repetida");
 					console.log(data);
-					res.status(403).json({
-						success: false,
-						message: 'El usuario ya ha valorado anteriormente a este profesor'
-					});
+					res.json({ message: 'Ya has valorado anteriormente a este profesor'});
 				}
 				else {
 					datos = {
@@ -73,14 +70,14 @@ function actualizarValMedia(req, res){
 			});
 		}
 		else {
-			//console.log(data_user)
 			var mu = data_user.valoracionMedia;
 			var num_val = data_user.numeroValoraciones;
 			mu = mu * num_val + req.body.puntuacion;
 			data_user.numeroValoraciones = num_val + 1;
 			data_user.valoracionMedia = mu / (num_val + 1);
 			data_user.save();
-			res.json(req.body.puntuacion)
+			console.log("Valoracion actualizada")
+			res.json({ message: 'Valoracion enviada ' + req.body.puntuacion});
 		}
 	});
 }
