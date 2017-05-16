@@ -80,6 +80,7 @@ function actualizarValMedia(req, res){
 			data_user.numeroValoraciones = num_val + 1;
 			data_user.valoracionMedia = mu / (num_val + 1);
 			data_user.save();
+			res.json(req.body.puntuacion)
 		}
 	});
 }
