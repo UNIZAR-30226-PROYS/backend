@@ -30,21 +30,22 @@ module.exports = function (app)
 						profesor: data._id
 					});
 
-					favorito.save(function(err) {
-						if (err || !data)
-						{
-							res.status(400).json({
-								success: false,
-								message: 'Error guardando la operacion'
-							});
-						} else
-						{
-							console.log(chalk.green('Agregado ' + data.userName + ' a favoritos de ' + req.decoded.user.userName));
-							res.status(200).json({
-								success: true,
-								message: 'Añadido profesor a favoritos'
-							});
-						}
+					Favoritos.findOneAndUpdate({alumno:favorito.alumno, profesor: favorito.profesor},
+						favorito, {upsert: true}, function(err){
+							if (err || !data)
+							{
+								res.status(400).json({
+									success: false,
+									message: 'Error guardando la operacion'
+								});
+							} else
+							{
+								console.log(chalk.green('Agregado ' + data.userName + ' a favoritos de ' + req.decoded.user.userName));
+								res.status(200).json({
+									success: true,
+									message: 'Añadido profesor a favoritos'
+								});
+							}
 					});
 				}
 			});
