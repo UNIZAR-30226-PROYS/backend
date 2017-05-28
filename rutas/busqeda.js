@@ -41,6 +41,7 @@ module.exports = function (app)
 		var query = {}; 			//Construimos la query en funcion de los parametros rellenados
 		query["$and"]=[];
 		if(req.body.ciudad){ query["$and"].push({ciudad: req.body.ciudad});}
+                if(req.body.diasPromocionRestantes){ query["$and"].push({diasPromocionRestantes: req.body.diasPromocionRestantes});}
 		if(req.body.precioHora){ query["$and"].push({precioHora: req.body.precioHora});}
 		if(req.body.horarios && JSON.stringify(req.body.horarios) != "[]") {query["$and"].push({horarios: { $in: req.body.horarios}});}
 		if(req.body.nombre){ query["$and"].push({userName: req.body.nombre});}
@@ -102,7 +103,7 @@ function lanzarQuery(err, res, query) {
 	else
 	{
 		modelos[0].find(query,
-			{userName: 1, nombre: 1, apellidos: 1, telefono: 1, email: 1, precioHora: 1,
+			{userName: 1, nombre: 1, apellidos: 1, telefono: 1, email: 1, diasPromocionRestantes:1, precioHora: 1,
 				ciudad: 1, horarios: 1, valoracionMedia: 1, horarios:1, asignaturas: 1},
 			{sort: {valoracionMedia: -1}})
 			.populate('asignaturas')
